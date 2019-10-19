@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public abstract class AutoBase extends OpMode {
-    
+
     DcMotor frontRightMotor;
     DcMotor frontLeftMotor;
     DcMotor backRightMotor;
@@ -23,9 +23,11 @@ public abstract class AutoBase extends OpMode {
 
     @Override
     public void loop() {
-        frontRightMotor.setPower(1.00);
-        frontLeftMotor.setPower(1.00);
-        backLeftMotor.setPower(1.00);
-        backRightMotor.setPower(1.00);
+        frontRightMotor.setPower(getPower());
+        frontLeftMotor.setPower(getPower());
+        backLeftMotor.setPower(getPower());
+        backRightMotor.setPower(getPower());
     }
+
+    public abstract double getPower();
 }
