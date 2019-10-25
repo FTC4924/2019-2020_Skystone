@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class AutoTestReverse extends AutoBase {
 
     @Override
-    public double getPower() {
-        return -1.00;
+    public Command getCommand() {
+        return new Command(CommandType.MOVE, 1.00, -1.00);
     }
 }

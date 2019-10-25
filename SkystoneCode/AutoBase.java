@@ -6,10 +6,17 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public abstract class AutoBase extends OpMode {
 
+    Command command;
+
     DcMotor frontRightMotor;
     DcMotor frontLeftMotor;
     DcMotor backRightMotor;
     DcMotor backLeftMotor;
+
+    public enum CommandType {
+        TURN,
+        MOVE
+    }
 
     @Override
     public void init() {
@@ -19,15 +26,16 @@ public abstract class AutoBase extends OpMode {
         backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        command = getCommand();
     }
 
     @Override
     public void loop() {
-        frontRightMotor.setPower(getPower());
-        frontLeftMotor.setPower(getPower());
-        backLeftMotor.setPower(getPower());
-        backRightMotor.setPower(getPower());
+        frontRightMotor.setPower(command.power);
+        frontLeftMotor.setPower(command.power);
+        backLeftMotor.setPower(command.power);
+        backRightMotor.setPower(command.power);
     }
 
-    public abstract double getPower();
+    public abstract Command getCommand();
 }
