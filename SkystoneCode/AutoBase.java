@@ -8,12 +8,12 @@ import java.util.ArrayList;
 
 public abstract class AutoBase extends OpMode {
 
-    Command command;
+    ArrayList<Command> commands;
+    Command currentCommand;
+    int commandIndex;
 
-    DcMotor frontRightMotor;
-    DcMotor frontLeftMotor;
-    DcMotor backRightMotor;
-    DcMotor backLeftMotor;
+    DcMotor leftMotor;
+    DcMotor rightMotor;
 
     public enum CommandType {
         TURN,
@@ -22,42 +22,39 @@ public abstract class AutoBase extends OpMode {
 
     @Override
     public void init() {
-        frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
-        frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
-        backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
-        backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        // command = getCommand();
+        rightMotor = hardwareMap.get(DcMotor.class, "rightMotor");
+        leftMotor = hardwareMap.get(DcMotor.class, "leftMotor");
+        rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        commands = getCommands();
+        currentCommand = commands.get(0);
+        resetStartTime();
+        commandIndex = 0;
     }
 
     @Override
     public void loop() {
 
-        switch (command.commandType) {
+        switch (currentCommand.commandType) {
 
             case MOVE:
 
-                if (time > command.distance) {
-                    stopMotors();
+                if (time > currentCommand.distance) {
+                    startNextCommand();
                 } else {
-                    frontRightMotor.setPower(command.power);
-                    frontLeftMotor.setPower(command.power);
-                    backLeftMotor.setPower(command.power);
-                    backRightMotor.setPower(command.power);
+                    rightMotor.setPower(currentCommand.power);
+                    leftMotor.setPower(currentCommand.power);
                 }
 
                 break;
 
             case TURN:
 
-                if (time > command.angleTarget) {
-                    stopMotors();
+                if (time > currentCommand.angleTarget) {
+                    startNextCommand();
                 } else {
-                    frontRightMotor.setPower(command.power);
-                    frontLeftMotor.setPower(-command.power);
-                    backLeftMotor.setPower(-command.power);
-                    backRightMotor.setPower(command.power);
+                    rightMotor.setPower(currentCommand.power);
+                    leftMotor.setPower(-currentCommand.power);
+
                 }
 
                 break;
@@ -65,10 +62,17 @@ public abstract class AutoBase extends OpMode {
     }
 
     public void stopMotors() {
-        frontRightMotor.setPower(0.00);
-        frontLeftMotor.setPower(0.00);
-        backLeftMotor.setPower(0.00);
-        backRightMotor.setPower(0.00);
+        rightMotor.setPower(0.00);
+        leftMotor.setPower(0.00);
+    }
+
+    public void startNextCommand() {
+        stopMotors();
+        commandIndex ++;
+        if (commandIndex < commands.size()) {
+            currentCommand = commands.get(commandIndex);
+            resetStartTime();
+        }
     }
 
     public abstract ArrayList<Command> getCommands();

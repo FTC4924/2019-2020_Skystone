@@ -12,7 +12,7 @@ public class AutoTestReverse extends AutoBase {
     public ArrayList<Command> getCommands() {
         return new ArrayList<>(
             Arrays.asList(
-                new Command(CommandType.TURN, 1.00, -1.00)
+                new Command(CommandType.TURN, 5.00, -1.00)
             )
         );
     }

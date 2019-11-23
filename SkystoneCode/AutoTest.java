@@ -12,7 +12,9 @@ public class AutoTest extends AutoBase {
     public ArrayList<Command> getCommands() {
         return new ArrayList<>(
             Arrays.asList(
-                new Command(CommandType.MOVE, 1.00, 1.00)
+                    new Command(CommandType.MOVE, 2.00, 1.00),
+                    new Command(CommandType.TURN, 1.00, 1.00),
+                    new Command(CommandType.MOVE, 1.00, 1.00)
             )
         );
     }

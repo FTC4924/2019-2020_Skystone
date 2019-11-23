@@ -9,10 +9,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name="HDrive")
 public class HDrive extends OpMode {
 
-    DcMotor frontRightMotor;
-    DcMotor frontLeftMotor;
-    DcMotor backLeftMotor;
-    DcMotor backRightMotor;
+    DcMotor rightMotor;
+    DcMotor leftMotor;
     DcMotor middleWheelMotor;
 
     DcMotor linearSlideMotor;
@@ -22,72 +20,95 @@ public class HDrive extends OpMode {
 
     @Override
     public void init() {
-        frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
-        frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
-        backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
-        backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
+        rightMotor = hardwareMap.get(DcMotor.class, "rightMotor");
+        leftMotor = hardwareMap.get(DcMotor.class, "leftMotor");
         middleWheelMotor = hardwareMap.get(DcMotor.class, "middleWheelMotor");
         linearSlideMotor = hardwareMap.get(DcMotor.class, "linearSlideMotor");
         linkageMotor = hardwareMap.get(DcMotor.class, "linkageMotor");
         grabberServo = hardwareMap.get(Servo.class,"grabberServo");
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        linkageMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         grabberServo.setPosition(0.50);
     }
 
     @Override
     public void loop() {
+        telemetry.addData("leftpower",gamepad1.left_stick_y * Math.abs(gamepad1.left_stick_y));
+        telemetry.addData("rightpower",gamepad1.right_stick_y * Math.abs(gamepad1.right_stick_y));
+        telemetry.addData("leftstick",gamepad1.left_stick_y );
+        telemetry.addData("rightstick",gamepad1.right_stick_y);
+
         if (gamepad1.right_stick_y > 0.01 || gamepad1.right_stick_y < -0.01) {
 
-            frontRightMotor.setPower(Math.pow(gamepad1.right_stick_y, 2));
-            backRightMotor.setPower(Math.pow(gamepad1.right_stick_y, 2));
+            rightMotor.setPower(gamepad1.right_stick_y * Math.abs(gamepad1.right_stick_y));
 
         } else {
-            frontRightMotor.setPower(0.00);
-            backRightMotor.setPower(0.00);
+
+            rightMotor.setPower(0.00);
+
         }
 
         if (gamepad1.left_stick_y > 0.01 || gamepad1.left_stick_y < -0.01) {
 
-            frontLeftMotor.setPower(Math.pow(gamepad1.left_stick_y, 2));
-            backLeftMotor.setPower(Math.pow(gamepad1.left_stick_y, 2));
+            leftMotor.setPower(gamepad1.left_stick_y * Math.abs(gamepad1.left_stick_y));
+
         } else {
-            frontLeftMotor.setPower(0.00);
-            backLeftMotor.setPower(0.00);
+
+            leftMotor.setPower(0.00);
+
         }
 
         if (gamepad1.left_bumper){
-            middleWheelMotor.setPower(-1.0);
+
+            middleWheelMotor.setPower(-0.5);
+
         } else if (gamepad1.right_bumper){
-            middleWheelMotor.setPower(1.0);
+
+            middleWheelMotor.setPower(0.5);
+
         } else {
+
             middleWheelMotor.setPower(0.0);
+
         }
 
         // Arm controls
-        if (gamepad2.right_stick_y > 0.01 || gamepad2.right_stick_y < -0.01) {
+        if (gamepad2.right_stick_y > -0.01 || gamepad2.right_stick_y < 0.01) {
 
-            linkageMotor.setPower(Math.pow(gamepad2.right_stick_y, 2));
+            linkageMotor.setPower(gamepad2.right_stick_y * Math.abs(gamepad2.right_stick_y / 2 ));
 
         } else {
-            linkageMotor.setPower(0.00);
+
+            linkageMotor.setPower(0.01);
+
         }
 
         if (gamepad2.left_stick_y > 0.01 || gamepad2.left_stick_y < -0.01) {
 
-            linearSlideMotor.setPower(Math.pow(gamepad2.left_stick_y, 2));
+            linearSlideMotor.setPower(gamepad2.left_stick_y * Math.abs(gamepad2.left_stick_y));
 
         } else {
+
             linearSlideMotor.setPower(0.00);
+
         }
 
-        if (gamepad2.left_bumper){
-            grabberServo.setPosition(0.0);
-        } else if (gamepad2.right_bumper){
-            grabberServo.setPosition(1.0);
-        } else {
+        if (gamepad2.x) {
+
+            grabberServo.setPosition(0.25);
+
+        }
+
+        if (gamepad2.y) {
+
             grabberServo.setPosition(0.50);
+
         }
 
+        if (gamepad2.b) {
+
+            grabberServo.setPosition(1.00);
+
+        }
     }
 }
